@@ -1,0 +1,47 @@
+{% extends 'anketler/base.html' %}
+
+{% block content %}
+<div class="header-nav">
+    <a href="{% url 'anketler:index' %}" class="back-circle">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+            <path fill-rule="evenodd" d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0z"/>
+        </svg>
+    </a>
+    <div class="progress-indicator">
+        <div class="progress-text">GÜVENLİ GİRİŞ // ACCREDITATION</div>
+        <div class="progress-bar-bg">
+            <div class="progress-bar-fill" style="width: 100%;"></div>
+        </div>
+    </div>
+</div>
+
+<div class="page-header">
+    <p class="progress-text">OYUNCU TÜNELİ</p>
+    <h1 class="page-title">Sahaya Giriş Yap.</h1>
+</div>
+
+<div class="vote-form-container" style="max-width: 500px; margin: 0 auto;">
+    {% if form.errors %}
+        <div class="error-message">Kullanıcı adı veya şifre hatalı. Lütfen tekrar deneyin.</div>
+    {% endif %}
+
+    <form method="post" action="{% url 'login' %}">
+        {% csrf_token %}
+        <div class="form-group">
+            <label class="progress-text" style="font-size: 0.7rem; margin-bottom: 0.5rem; display: block;">KULLANICI ADI</label>
+            <input type="text" name="username" class="form-input" required autofocus>
+        </div>
+        <div class="form-group">
+            <label class="progress-text" style="font-size: 0.7rem; margin-bottom: 0.5rem; display: block;">ŞİFRE</label>
+            <input type="password" name="password" class="form-input" required>
+        </div>
+        
+        <button type="submit" class="btn-submit">SİSTEME GİR</button>
+        <input type="hidden" name="next" value="{{ next }}">
+    </form>
+    
+    <div style="margin-top: 2rem; text-align: center; color: var(--text-secondary);">
+        Hesabın yok mu? <a href="{% url 'anketler:signup' %}" style="color: var(--accent-primary); font-weight: 700;">Hemen Kayıt Ol!</a>
+    </div>
+</div>
+{% endblock %}

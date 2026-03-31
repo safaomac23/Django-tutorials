@@ -1,0 +1,86 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Futbol Anketi{% endblock %}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'anketler/style.css' %}">
+    <script>
+        (function() {
+            const theme = localStorage.getItem('theme') || 'dark';
+            if (theme === 'light') {
+                document.documentElement.setAttribute('data-theme', 'light');
+            }
+        })();
+    </script>
+</head>
+<body data-theme-custom="dark">
+    <div class="background-particles" id="particles"></div>
+    
+    <div class="theme-toggle-container">
+        {% if user.is_authenticated %}
+            <span class="progress-text" style="font-size: 0.7rem; margin-right: 1rem;">HOŞ GELDİN, {{ user.username|upper }}!</span>
+            <form action="{% url 'logout' %}" method="post" style="display: inline;">
+                {% csrf_token %}
+                <button type="submit" class="btn-text" style="margin-right: 1rem; color: var(--accent-red); background: none; border: none; font-family: inherit; font-size: 0.9rem; font-weight: 700; cursor: pointer;">ÇIKIŞ</button>
+            </form>
+        {% else %}
+            <a href="{% url 'login' %}" class="btn-text" style="margin-right: 1rem;">GİRİŞ</a>
+            <a href="{% url 'anketler:signup' %}" class="btn-submit" style="display: inline-block; width: auto; padding: 0.5rem 1rem; font-size: 0.7rem; margin-right: 1rem;">TRANSFERS (KAYDOL)</a>
+        {% endif %}
+        <button class="theme-toggle-btn" id="theme-toggle" aria-label="Temayı Değiştir" style="display: inline-flex;">
+            <span class="moon">🌙</span>
+            <span class="sun">☀️</span>
+        </button>
+    </div>
+
+    <div class="app-container">
+        {% block content %}
+        {% endblock %}
+    </div>
+
+    <script>
+        // Theme Toggle Logic
+        document.getElementById('theme-toggle').addEventListener('click', () => {
+            let theme = document.documentElement.getAttribute('data-theme');
+            if (theme === 'light') {
+                document.documentElement.removeAttribute('data-theme');
+                localStorage.setItem('theme', 'dark');
+            } else {
+                document.documentElement.setAttribute('data-theme', 'light');
+                localStorage.setItem('theme', 'light');
+            }
+        });
+
+        // Advanced Floating Particles
+        document.addEventListener('DOMContentLoaded', () => {
+            const container = document.getElementById('particles');
+            const count = 40;
+            
+            for (let i = 0; i < count; i++) {
+                const particle = document.createElement('div');
+                const size = Math.floor(Math.random() * 4) + 2; 
+                particle.className = `particle`;
+                
+                particle.style.width = size + 'px';
+                particle.style.height = size + 'px';
+                particle.style.left = Math.random() * 100 + 'vw';
+                particle.style.top = (Math.random() * 100 + 100) + 'vh'; // Start below view
+                
+                const duration = 15 + Math.random() * 25;
+                const delay = Math.random() * -30;
+                particle.style.animationDuration = duration + 's';
+                particle.style.animationDelay = delay + 's';
+                
+                particle.style.opacity = 0.1 + Math.random() * 0.3;
+                
+                container.appendChild(particle);
+            }
+        });
+    </script>
+</body>
+</html>

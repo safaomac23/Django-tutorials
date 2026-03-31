@@ -1,0 +1,84 @@
+{% extends 'anketler/base.html' %}
+
+{% block content %}
+<div class="header-nav">
+    <div class="progress-indicator">
+        <div class="progress-text">Sezon 2026 // Platform Aktif</div>
+        <div class="progress-bar-bg">
+            <div class="progress-bar-fill" style="width: 100%;"></div>
+        </div>
+    </div>
+</div>
+
+<div class="page-header">
+    <p class="progress-text">STADYUM HUB</p>
+    <h1 class="page-title">Geleceği Sen Belirle.</h1>
+</div>
+
+<div class="info-box">
+    <p>Dünyanın en tutkulu anket platformuna hoş geldin. Oylama yaparak futbol tarihine yön ver veya kendi tartışmanı başlat.</p>
+</div>
+
+<div class="index-layout">
+    <!-- Left Column: Existing Polls -->
+    <div class="polls-list-section">
+        <h2 class="vote-form-title">Öne Çıkan Tartışmalar</h2>
+        {% if latest_poll_list %}
+        <div class="card-grid">
+            {% for poll in latest_poll_list %}
+            <a href="{% url 'anketler:detail' poll.id %}" class="anket-card">
+                <div class="icon">
+                    {% if forloop.counter == 1 %}🏆
+                    {% elif forloop.counter == 2 %}⚽
+                    {% elif forloop.counter == 3 %}🔥
+                    {% elif forloop.counter == 4 %}📊
+                    {% else %}🏟️{% endif %}
+                </div>
+                <span>{{ poll.title }}</span>
+                <p style="font-size: 0.8rem; color: var(--text-secondary); margin-top: 1rem;">
+                    {{ poll.question_set.count }} Soru • Aktif Katılım
+                </p>
+            </a>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="info-box">
+            <p>Şu anda aktif bir anket bulunmamaktadır.</p>
+        </div>
+        {% endif %}
+    <!-- Right Column: Create Poll Form -->
+    <div class="create-poll-section">
+        {% if user.is_authenticated %}
+        <div class="vote-form-container" style="padding: 2rem;">
+            <h2 class="vote-form-title" style="font-size: 1.25rem;">HIZLI ANKET OLUŞTUR</h2>
+            <form action="{% url 'anketler:create_poll' %}" method="post" id="create-poll-form">
+                {% csrf_token %}
+                <div class="form-group">
+                    <input type="text" name="title" class="form-input" placeholder="Anket Başlığı" required>
+                </div>
+                
+                <div id="questions-container">
+                    <div class="question-block" data-qindex="0" style="margin-bottom: 1rem;">
+                        <input type="text" name="q_0_text" class="form-input" placeholder="Soru Metni" required>
+                        <div class="choices-container" style="padding-left: 0.5rem; border-left: 2px solid var(--border-color); margin-bottom: 0.5rem;">
+                            <input type="text" name="q_0_c_0" class="form-input" placeholder="Seçenek 1" required style="font-size: 0.85rem; padding: 0.8rem;">
+                            <input type="text" name="q_0_c_1" class="form-input" placeholder="Seçenek 2" required style="font-size: 0.85rem; padding: 0.8rem;">
+                        </div>
+                    </div>
+                </div>
+                
+                <button type="submit" class="btn-submit">YAYINA AL</button>
+            </form>
+        </div>
+        {% else %}
+        <div class="vote-form-container" style="padding: 2rem; text-align: center; border-style: dashed;">
+            <h2 class="vote-form-title" style="font-size: 1.1rem; color: var(--text-secondary);">ANKET OLUŞTURMAK İÇİN</h2>
+            <p style="margin: 1.5rem 0; color: var(--text-secondary);">Kendi futbol tartışmanı başlatmak için hemen takıma katıl.</p>
+            <a href="{% url 'login' %}" class="btn-submit" style="display: block;">GİRİŞ YAP / KAYDOL</a>
+        </div>
+        {% endif %}
+    </div>
+
+</div>
+
+{% endblock %}

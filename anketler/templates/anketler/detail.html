@@ -1,0 +1,55 @@
+{% extends 'anketler/base.html' %}
+
+{% block content %}
+<div class="header-nav">
+    <a href="{% url 'anketler:index' %}" class="back-circle">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+            <path fill-rule="evenodd" d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0z"/>
+        </svg>
+    </a>
+    <div class="progress-indicator">
+        <div class="progress-text">OYLAMA SÜRÜYOR // CANLI</div>
+        <div class="progress-bar-bg">
+            <div class="progress-bar-fill" style="width: 50%;"></div>
+        </div>
+    </div>
+</div>
+
+<div class="page-header">
+    <p class="progress-text">CANLI ANKET</p>
+    <h1 class="page-title">{{ poll.title }}</h1>
+</div>
+
+<div class="vote-form-container">
+    {% if error_message %}
+        <div class="error-message">
+            <span style="margin-right: 0.5rem;">⚠️</span> {{ error_message }}
+        </div>
+    {% endif %}
+
+    <form action="{% url 'anketler:vote' poll.id %}" method="post">
+    {% csrf_token %}
+    
+    {% for question in poll.question_set.all %}
+    <div class="question-block">
+        <h2 class="vote-form-title">{{ question.question_text }}</h2>
+        <fieldset style="border: none;">
+            {% for choice in question.choice_set.all %}
+                <label class="choice-label" for="choice{{ choice.id }}">
+                    <input type="radio" name="question_{{ question.id }}" id="choice{{ choice.id }}" value="{{ choice.id }}">
+                    <div class="radio-custom"></div>
+                    <span class="choice-text">{{ choice.choice_text }}</span>
+                </label>
+            {% endfor %}
+        </fieldset>
+    </div>
+    {% endfor %}
+    
+    {% if user.is_authenticated %}
+        <button type="submit" class="btn-submit">SEÇİMİMİ ONAYLA</button>
+    {% else %}
+        <a href="{% url 'login' %}" class="btn-submit" style="display: block; text-align: center;">OY VERMEK İÇİN GİRİŞ YAP</a>
+    {% endif %}
+    </form>
+</div>
+{% endblock %}

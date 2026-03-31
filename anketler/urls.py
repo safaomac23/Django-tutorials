@@ -1,0 +1,13 @@
+from django.urls import path
+
+from . import views
+
+app_name = "anketler"
+urlpatterns = [
+    path("", views.IndexView.as_view(), name="index"),
+    path("<int:pk>/", views.DetailView.as_view(), name="detail"),
+    path("<int:pk>/results/", views.ResultsView.as_view(), name="results"),
+    path("<int:poll_id>/vote/", views.vote, name="vote"),
+    path("create/", views.create_poll, name="create_poll"),
+    path("signup/", views.signup, name="signup"),
+]
